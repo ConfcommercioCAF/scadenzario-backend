@@ -17,7 +17,7 @@ public class Scadenza {
     private Date dataModifica;          // nullable
     private Date dataEliminazione;      // nullable
     private Boolean flagEliminato;      // default false
-    private String flagPrivatoPubblico;
+    private Boolean flagPrivato;
     private String descrizione;
     private Date dataScadenza;
     private Date dataRinnovo;           // nullable
