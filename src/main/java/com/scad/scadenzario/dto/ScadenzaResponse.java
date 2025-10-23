@@ -19,6 +19,6 @@ public class ScadenzaResponse {
 	    private String livelloCriticita;
 	    private String nome;
 	    private String cognome;
-
+	    private Long idUtente;
 	    private List<NotificaResponse> notifiche;
 }
