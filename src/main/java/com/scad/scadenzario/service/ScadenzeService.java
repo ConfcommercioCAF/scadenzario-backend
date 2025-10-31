@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.scad.scadenzario.dto.NotificaResponse;
 import com.scad.scadenzario.dto.ScadenzaRequest;
 import com.scad.scadenzario.dto.ScadenzaResponse;
+import com.scad.scadenzario.model.Tipologie;
 import com.scad.scadenzario.repository.ScadenzeRepository;
 
 @Service
@@ -20,6 +21,8 @@ public class ScadenzeService {
 	  private static final Logger log = LoggerFactory.getLogger(ScadenzeRepository.class);
 	@Autowired
     private ScadenzeRepository scadenzaRepository;
+	@Autowired
+	private TipologieService tipologieService;
 
     /**
      * Restituisce tutte le scadenze non eliminate.
@@ -63,7 +66,20 @@ public class ScadenzeService {
 
         // Creiamo un oggetto ScadenzaResponse da passare al repository
         ScadenzaResponse scadenza = new ScadenzaResponse();
-        BeanUtils.copyProperties(request, scadenza);
+        BeanUtils.copyProperties(request, scadenza, 
+        	    "codiceTipologia", "descrizioneTipologia", "idSz"); 
+        	// 👉 escludi i campi che non esistono nella request, per evitare warning/reflection error
+
+        	// Recupera dal servizio la tipologia associata all'idTs
+        	tipologieService.getTipologiaById(request.getIdTs()).ifPresentOrElse(
+        	    tipologia -> {
+        	        scadenza.setCodiceTipologia(tipologia.getCodice());
+        	        scadenza.setDescrizioneTipologia(tipologia.getDescrizione());
+        	    },
+        	    () -> {
+        	        throw new IllegalArgumentException("Tipologia non trovata per idTs: " + request.getIdTs());
+        	    }
+        	);
 
         // Copia le notifiche dal request al response
         if (request.getNotifiche() != null && !request.getNotifiche().isEmpty()) {

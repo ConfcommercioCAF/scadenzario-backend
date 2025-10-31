@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class ScadenzaRequest {
     private Long idTs;
-    private String codiceTipologia;
-    private String descrizioneTipologia;
     private Long idCliente;
     private Long idUtente;
     private Boolean flagPrivato;
